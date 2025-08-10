@@ -1,17 +1,17 @@
-# Telegram YouTube to MP3 Bot
+# Telegram YouTube to MP3 Bot (Railway + FFmpeg)
 
-Bot Telegram sederhana untuk mengunduh YouTube menjadi MP3.
+Bot Telegram sederhana untuk mengunduh YouTube menjadi MP3.  
+Versi ini sudah otomatis menginstal FFmpeg di Railway.
 
 ## 🚀 Deploy ke Railway
-Klik tombol di bawah untuk langsung deploy ke Railway:
+1. Upload folder ini ke GitHub.
+2. Di Railway, buat project baru -> Deploy from GitHub.
+3. Tambahkan Environment Variable:
+   - `BOT_TOKEN` = Token bot dari BotFather.
+4. Deploy.
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?referralCode=YOUR_TEMPLATE)
-
-## ⚙️ Konfigurasi
-Set environment variable:
-- `BOT_TOKEN` : Token bot dari BotFather.
+Bot akan aktif 24 jam di Railway.
 
 ## 📌 Cara Pakai
-1. Jalankan bot.
-2. Kirim link YouTube.
-3. Bot akan mengirimkan file MP3.
+- Kirim link YouTube ke bot.
+- Bot akan mengirimkan file MP3.
