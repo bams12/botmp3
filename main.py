@@ -1,49 +1,50 @@
 import os
 import subprocess
-import tempfile
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Updater, CommandHandler
+from telegram import ChatAction
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+COOKIES_FILE = "cookies.txt"
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Kirim link YouTube untuk saya ubah jadi MP3 🎵")
+def start(update, context):
+    update.message.reply_text("Kirim /mp3 <link YouTube> untuk download MP3.")
 
-async def download_mp3(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    url = update.message.text.strip()
-    if not url.startswith("http"):
-        await update.message.reply_text("❌ Kirim link YouTube yang valid.")
+def download_mp3(update, context):
+    if not context.args:
+        update.message.reply_text("Contoh: /mp3 https://youtu.be/video_id")
         return
 
-    await update.message.reply_text("⏳ Sedang download & convert ke MP3...")
+    url = context.args[0]
+    update.message.chat.send_action(ChatAction.UPLOAD_DOCUMENT)
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        output_path = os.path.join(tmpdir, "audio.mp3")
+    try:
+        update.message.reply_text("🎵 Sedang memproses...")
 
-        try:
-            # yt-dlp fix SABR: force bestaudio dan non-DASH
-            subprocess.run([
-                "yt-dlp",
-                "-f", "bestaudio",
-                "--extract-audio",
-                "--audio-format", "mp3",
-                "--audio-quality", "0",
-                "--no-playlist",
-                "--downloader", "ffmpeg",
-                "--geo-bypass",
-                "--force-ipv4",
-                "-o", output_path,
-                url
-            ], check=True)
+        cmd = [
+            "yt-dlp",
+            "--extract-audio",
+            "--audio-format", "mp3",
+            "--audio-quality", "320K",
+            "--embed-thumbnail",
+            "--add-metadata",
+            "--no-playlist",
+            "--cookies", COOKIES_FILE,
+            url
+        ]
+        subprocess.run(cmd, check=True)
 
-            await update.message.reply_audio(audio=open(output_path, "rb"))
+        for file in os.listdir():
+            if file.endswith(".mp3"):
+                update.message.reply_audio(audio=open(file, "rb"))
+                os.remove(file)
 
-        except subprocess.CalledProcessError:
-            await update.message.reply_text("❌ Gagal download. Coba link lain atau video lebih pendek.")
-
-app = ApplicationBuilder().token(BOT_TOKEN).build()
-app.add_handler(CommandHandler("start", start))
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, download_mp3))
+    except Exception as e:
+        update.message.reply_text(f"❌ Error: {e}")
 
 if __name__ == "__main__":
-    app.run_polling()
+    updater = Updater(BOT_TOKEN, use_context=True)
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("mp3", download_mp3))
+    updater.start_polling()
+    updater.idle()
