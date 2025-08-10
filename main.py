@@ -13,7 +13,7 @@ async def handle_link(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("⏳ Sedang mengunduh...")
 
     ydl_opts = {
-        'format': 'bestaudio/best',
+        'format': 'bestaudio/best[ext=webm]/bestaudio/best',
         'outtmpl': 'song.%(ext)s',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
