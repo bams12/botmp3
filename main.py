@@ -4,7 +4,7 @@ from telegram.ext import Updater, CommandHandler
 from telegram import ChatAction
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-COOKIES_FILE = "cookies.txt"
+COOKIES_FILE = "cookies.json"
 
 def start(update, context):
     update.message.reply_text("Kirim /mp3 <link YouTube> untuk download MP3.")
@@ -28,7 +28,7 @@ def download_mp3(update, context):
             "--embed-thumbnail",
             "--add-metadata",
             "--no-playlist",
-            "--cookies", cookies,
+            "--cookies", "COOKIES",
             url
         ]
         subprocess.run(cmd, check=True)
