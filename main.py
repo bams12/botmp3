@@ -24,7 +24,7 @@ def download_mp3(update, context):
             "yt-dlp",
             "--extract-audio",
             "--audio-format", "mp3",
-            "--audio-quality", "128K",
+            "--audio-quality", "320",
             "--embed-thumbnail",
             "--add-metadata",
             "--no-playlist",
