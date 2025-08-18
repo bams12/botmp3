@@ -24,11 +24,11 @@ def download_mp3(update, context):
             "yt-dlp",
             "--extract-audio",
             "--audio-format", "mp3",
-            "--audio-quality", "320K",
+            "--audio-quality", "128K",
             "--embed-thumbnail",
             "--add-metadata",
             "--no-playlist",
-            "--cookies", ,
+            "--cookies", cookies.txt,
             url
         ]
         subprocess.run(cmd, check=True)
