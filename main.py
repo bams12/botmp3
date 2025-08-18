@@ -28,7 +28,7 @@ def download_mp3(update, context):
             "--embed-thumbnail",
             "--add-metadata",
             "--no-playlist",
-            "--cookies", cookies.txt,
+            "--cookies", cookies,
             url
         ]
         subprocess.run(cmd, check=True)
